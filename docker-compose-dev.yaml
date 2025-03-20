@@ -1,0 +1,25 @@
+volumes:
+  postgres_data:
+
+services:
+  db:
+    container_name: pomodoro_db
+    image: postgres:15
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pomodoro-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    ports:
+      - "5432:5432"
+
+networks:
+   pomodoro-network:
+    driver: bridge
